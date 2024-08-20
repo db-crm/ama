@@ -98,6 +98,7 @@ def my_login(request):
 
     return render(request, 'web_ama/my_login.html', context=context)
 
+@login_required(login_url='my_login')
 def dashboard(request):
     assessments = process_assessment.objects.all().order_by('creation_date')
     departments = department.objects.all()
@@ -119,6 +120,7 @@ def dashboard(request):
     }
     return render(request, 'web_ama/dashboard.html', context)
 
+@login_required(login_url='my_login')
 def get_filtered_assessments(request):
     search_term = request.GET.get('search', '')
     department_id = request.GET.get('department', '')
@@ -207,7 +209,7 @@ def get_all_divisions_areas(request):
         print(f"Error in get_all_divisions_areas: {str(e)}")  # For debugging
         return JsonResponse({'error': 'Internal server error'}, status=500)
 
-
+@login_required(login_url='my_login')
 class CreateRecordView(SessionWizardView):
     form_list = [GeneralInfoForm, ProcessNameForm, TriggeringEventsForm, ToolsUsedForm, 
                  ProcessStepsForm, ActorsForm, ObjectiveForm, GradeForm, RecommendationsForm]
@@ -444,7 +446,7 @@ def generate_pdf(request,pk):
     
 
 # PDF Export 
-
+@login_required(login_url='my_login')
 def format_li(line):
     """Format the proposals as bullet points."""
     lines = line.split('\n')
