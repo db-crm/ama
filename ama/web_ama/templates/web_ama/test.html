@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efficiency vs Effectiveness Chart</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        .special {
+            border: 0px solid black;
+        }
+        .headerth {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .efficiency {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            padding: 12px 0;
+            font-weight: bold;
+            width: 15px;
+        }
+        .red { background-color: #ffcccc; }
+        .yellow { background-color: #ffffcc; }
+        .green { background-color: #ccffcc; }
+        .description {
+            text-align: left;
+            max-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <table class="assessment-table">
+        <tr>
+            <th class="headerth"></th>
+            <th class="headerth"></th>
+            <th class="headerth">Very dissatisfied</th>
+            <th class="headerth">Dissatisfied</th>
+            <th class="headerth">Satisfied</th>
+            <th class="headerth">Very satisfied</th>
+            <th class="headerth">Expectations exceeded</th>
+            <th class="headerth"></th>
+        </tr>
+        <tr>
+            <td class="efficiency headerth" rowspan="5">Efficiency</td>
+            <td class="description">Process is defect-free, unit cost is low, cycle time is short and no waste</td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="yellow"></td>
+            <td class="green"></td>
+            <td class="green"></td>
+            <td class="headerth">Expectations exceeded</td>
+        </tr>
+        <tr>
+            <td class="description">Process is nearly defective, low waste and cycle time better than most</td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="yellow"></td>
+            <td class="green"></td>
+            <td class="green"></td>
+            <td class="headerth">Very satisfied</td>
+        </tr>
+        <tr>
+            <td class="description">Process has some defects. Waste cycle time is up to industry average</td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="yellow"></td>
+            <td class="yellow"></td>
+            <td class="yellow"></td>
+            <td class="headerth">Satisfied</td>
+        </tr>
+        <tr>
+            <td class="description">Process has many defects, generates substantial waste and cycle time is undue</td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="headerth">Dissatisfied</td>
+        </tr>
+        <tr>
+            <td class="description">Process is plagued with defects, waste and long unpredictable cycle time</td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="red"></td>
+            <td class="headerth">Very dissatisfied</td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <td>Output does not meet customers requirements</td>
+            <td>Output meets some customer requirements</td>
+            <td>Output meets most customer requirment</td>
+            <td>Output meets all customer requirements</td>
+            <td>Output exceeds most customer requirement</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <td colspan="5" class="headerth">Effectiveness</td>
+            <td></td>
+        </tr>
+    </table>
+</body>
+</html>

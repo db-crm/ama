@@ -1,0 +1,159 @@
+{% extends 'web_ama/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Header Section -->
+    <div class="container-fluid mt-4 mb-4">
+        <h1 class="display-4 text-primary">Welcome, {{ user }}!</h1>
+        <p class="lead">Explore and manage your process assessments below.</p>
+    </div>
+
+    <!-- Filter and Export Section -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Filter and Export Options</h5>
+            <div class="row g-3 align-items-center">
+                <!-- Search Bar -->
+                <div class="col-md-3">
+                    <input type="text" id="search-bar" class="form-control" placeholder="Search assessments...">
+                </div>
+                <!-- Department Filter -->
+                <div class="col-md-2">
+                    <select id="department-filter" class="form-select">
+                        <option value="">All Departments</option>
+                        {% for dept in departments %}
+                            <option value="{{ dept.id }}">{{ dept.department_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Division Filter -->
+                <div class="col-md-2">
+                    <select id="division-filter" class="form-select">
+                        <option value="">All Divisions</option>
+                        {% for div in divisions %}
+                            <option value="{{ div.id }}">{{ div.division_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Area Filter -->
+                <div class="col-md-2">
+                    <select id="area-filter" class="form-select">
+                        <option value="">All Areas</option>
+                        {% for a in areas %}
+                            <option value="{{ a.id }}">{{ a.area_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Export Buttons -->
+                <div class="col-md-3">
+                    <a href="#" id="export-pdf" class="btn btn-primary btn-sm me-2">
+                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i> Export PDF
+                    </a>
+                    <a href="#" id="export-excel" class="btn btn-success btn-sm">
+                        <i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Cards Section -->
+    <div class="row mb-4">
+        <!-- Total Assessments Card -->
+        <div class="col-md-6">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Assessments</h5>
+                    <p class="card-text display-4" id="total-assessments">0</p>
+                </div>
+            </div>
+        </div>
+        <!-- Assessments This Month Card -->
+        <div class="col-md-6">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Assessments This Month</h5>
+                    <p class="card-text display-4" id="assessments-this-month">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Assessment Button -->
+    <div class="mb-4">
+        <a class="btn btn-outline-primary" href="{% url 'create_assessment' %}">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i> Add New Assessment
+        </a>
+    </div>
+
+    <!-- Assessments Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Process Assessments</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <!-- <th scope="col">ID</th> -->
+                            <th scope="col">Process Name</th>
+                            <th scope="col">Lead</th>
+                            <th scope="col">Department</th>
+                            <th scope="col">Division</th>
+                            <th scope="col">Area</th>
+                            <th scope="col">Date Assessed</th>
+                            <th scope="col">Created On</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assessment-table-body">
+                        {% if assessments %}
+                            {% for assessment in assessments %}
+                            <tr>
+                                <!-- <td>{{ assessment.id }}</td> -->
+                                <td>{{ assessment.process_name_c }}</td>
+                                <td>{{ assessment.process_lead}}</td>
+                                <td>{{ assessment.process_department }}</td>
+                                <td>{{ assessment.process_division }}</td>
+                                <td>{{ assessment.process_area }}</td>
+                                
+                                <td>{{ assessment.process_assessment_date|date:"Y-m-d" }}</td>
+                                <td>{{ assessment.creation_date|date:"Y-m-d H:i" }}</td>
+                                <td>
+                                    <a class="btn btn-success btn-sm" href="{% url 'record' assessment.id %}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center">No assessments found.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <select id="items-per-page" class="form-select w-auto">
+                <option value="10">10 per page</option>
+                <option value="25">25 per page</option>
+                <option value="50">50 per page</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-end" id="pagination">
+                    <!-- Pagination will be dynamically populated here -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Include JavaScript file -->
+    <script src="{% static 'js/records.js' %}"></script>
+{% endblock %}

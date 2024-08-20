@@ -1,0 +1,125 @@
+{% extends 'web_ama/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>Create Process Assessment</h2>
+<h3>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}: {{ step_title }}</h3>
+<form method="post" id="process-assessment-form">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {{ wizard.form|crispy }}
+    
+    {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}" class="btn btn-secondary">First step</button>
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-secondary">Previous step</button>
+    {% endif %}
+    
+    {% if wizard.steps.next %}
+        <button type="submit" class="btn btn-primary">Next step</button>
+    {% else %}
+        <button type="submit" class="btn btn-success">Submit</button>
+    {% endif %}
+</form>
+
+<script>
+    var initialFormData = JSON.parse('{{ form_data_json|default:"{}" | escapejs }}');
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Initial form data:", initialFormData);
+    
+        function updateDependentDropdown(parentSelector, childSelector, url, paramName) {
+            const parentElement = document.querySelector(parentSelector);
+            const childElement = document.querySelector(childSelector);
+    
+            if (parentElement && childElement) {
+                function updateChild() {
+                    const parentId = parentElement.value;
+                    const currentChildValue = childElement.value;
+                    childElement.innerHTML = '<option value="">---------</option>';
+                    childElement.disabled = true;
+    
+                    if (parentId) {
+                        return fetch(`${url}?${paramName}=${parentId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                childElement.disabled = false;
+                                data.forEach(item => {
+                                    const option = document.createElement('option');
+                                    option.value = item.id;
+                                    option.textContent = item.division_name || item.area_name;
+                                    childElement.appendChild(option);
+                                });
+                                
+                                // Restore the selected value
+                                if (currentChildValue) {
+                                    childElement.value = currentChildValue;
+                                } else {
+                                    const childFieldName = childSelector.replace('#id_0-', '');
+                                    if (initialFormData[childFieldName]) {
+                                        childElement.value = initialFormData[childFieldName];
+                                    }
+                                }
+                                childElement.dispatchEvent(new Event('change'));
+                            })
+                            .catch(error => {
+                                console.error("Fetch error:", error);
+                                childElement.innerHTML = '<option value="">Error loading options</option>';
+                            });
+                    }
+                    return Promise.resolve();
+                }
+    
+                parentElement.addEventListener('change', updateChild);
+                
+                // Return the promise of updateChild
+                return updateChild();
+            }
+            return Promise.resolve();
+        }
+    
+
+        async function initializeDependentDropdowns() {
+            // Restore initial values for all fields
+            Object.keys(initialFormData).forEach(key => {
+                const element = document.getElementById(`id_0-${key}`);
+                if (element) {
+                    element.value = initialFormData[key];
+                    element.dispatchEvent(new Event('change'));
+                }
+            });
+    
+            // Then update dropdowns
+            await updateDependentDropdown(
+                '#id_0-process_department', 
+                '#id_0-process_division',
+                '{% url "create_assessment" %}',
+                'department'
+            );
+    
+            await updateDependentDropdown(
+                '#id_0-process_division', 
+                '#id_0-process_area',
+                '{% url "create_assessment" %}',
+                'division'
+            );
+
+            
+        }
+    
+        initializeDependentDropdowns();
+    
+        // Handle back button clicks
+        const backButtons = document.querySelectorAll('button[name="wizard_goto_step"]');
+        backButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                setTimeout(function() {
+                    initializeDependentDropdowns();
+                }, 100);
+            });
+        });
+    });
+</script>
+{% endblock %}

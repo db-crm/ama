@@ -1,0 +1,40 @@
+{% extends 'web_ama/base.html'%}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <body>
+        <br>
+        <br>
+        <br>
+
+        <div class="container bg-light shadow-md p-4 form-layout">
+            <h3> Login to your account </h3>
+
+
+            <hr>
+        
+
+            <form method="POST" autocomplete="off">
+
+                {% csrf_token %}
+                {{loginform|crispy}}
+
+                <br>
+
+                <button type="submit" class="btn btn-primary w-100 btn-block p-2"> Log in &nbsp;  <i class="fa fa-key" aria-hidden="true"></i> </button>
+            
+            </form>
+            <br>
+            <div class="text-center">
+                <p> Don't have an account? </p> <a href="{% url 'register'%}"> Register </a>
+            </div>
+
+        </div>
+
+        <br>         
+
+    </body>
+
+
+{% endblock %}

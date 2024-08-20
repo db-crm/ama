@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Process Assessment - {{ process.process_name_c }}</title>
+    <style>
+        {{ css_content|safe }}
+    </style>
+</head>
+<body>
+    <div class="pdf-body">
+        <div class="header-container">
+            <div class="logo-container">
+                <img class="city-logo" src="{{ logo }}" alt="Company Logo">
+            </div>
+            <h1 class="pdf-title"> {{ process.process_name_c }} - Process Assessment</h1>
+        </div>
+
+        <div class="info-container">
+            <p><strong>Date Assessed:</strong> {{ process.process_assessment_date }}</p>
+            <p><strong>Process Lead:</strong> {{ process.process_lead }}</p>
+            <p><strong>Process Status:</strong> {{ process.get_process_status_display }}</p>
+            <p><strong>Description:</strong> {{ process.process_description }}</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Process Breakdown</div>
+            <div class="card-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th  class="table_headers">Elements to Define</th>
+                            <th  class="table_headers">Question</th>
+                            <th  class="table_headers">Comments</th>
+                            <th  class="table_headers">Source</th>
+                            <th  class="table_headers">Action/Next Steps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="table_column_headers">Name</td>
+                            <td>How do you refer to this process?</td>
+                            <td>{{ process.process_name_c }}</td>
+                            <td>{{ process.process_name_s }}</td>
+                            <td>{{ process.process_name_n }}</td>
+                        </tr>
+                        <tr>
+                            <td class="table_column_headers">Triggering Events</td>
+                            <td>What causes this process to be executed?</td>
+                            <td>
+                                {% for item in process.process_trigger_c %}
+                                    <li class="listed-item">{{ item|safe }}</li>
+                                {% endfor %}
+                            </td>
+                            <td>{{ process.process_trigger_s }}</td>
+                            <td>{{ process.process_trigger_n }}</td>
+                        </tr>
+                        <tr>
+                            <td class="table_column_headers">Tools Used</td>
+                            <td>What are the tools/systems used to carry out the process?</td>
+                            <td>
+                                {% for item in process.process_tools_c %}
+                                    <li class="listed-item">{{ item|safe }}</li>
+                                {% endfor %}
+                            </td>
+                            <td>{{ process.process_tools_s }}</td>
+                            <td>{{ process.process_tools_n }}</td>
+                        </tr>
+                        <tr>
+                            <td class="table_column_headers">Process Steps / Activities</td>
+                            <td>What are the steps involved in this process?</td>
+                            <td>{% for item in process.process_steps_c %}
+                                    <li class="listed-item">{{ item|safe }}</li>
+                                {% endfor %}
+                            </td>
+                            <td>{{ process.process_steps_s }}</td>
+                            <td>{{ process.process_steps_n }}</td>
+                        </tr>
+                        <tr>
+                            <td class="table_column_headers">Actors</td>
+                            <td>Who are the main participants in this process?</td>
+                            <td>
+                                {% for item in process.process_actors_c %}
+                                    <li class="listed-item">{{ item|safe }}</li>
+                                {% endfor %}
+                            </td>
+                            <td>{{ process.process_actors_s }}</td>
+                            <td>{{ process.process_actors_n }}</td>
+                        </tr>
+                        <tr>
+                            <td class="table_column_headers">Objective</td>
+                            <td>What is the objective of the process?</td>
+                            <td>
+                                {% for item in process.process_objective_c %}
+                                    <li class="listed-item">{{ item|safe }}</li>
+                                {% endfor %}
+                            </td>
+                            <td>{{ process.process_objective_s }}</td>
+                            <td>{{ process.process_objective_n }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Process Assessment</div>
+
+            <table class="assessment-table">
+  
+                <thead>
+                    <tr>
+                        <th class="none" width="10%"></th>
+                        <th class="none" width="20%"></th>
+                        <th class="headerth" width="12%">Very dissatisfied</th>
+                        <th class="headerth" width="10%">Dissatisfied</th>
+                        <th class="headerth" width="10%">Satisfied</th>
+                        <th class="headerth" width="10%">Very satisfied</th>
+                        <th class="headerth" width="15%">Expectations exceeded</th>
+                        <th class="none" width="13%"></th>
+                    </tr>
+                  
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="efficiency headerth" rowspan="5" width="10%">Efficiency</td>
+                        <td class="description"width="20%">Process is defect-free, unit cost is low, cycle time is short and no waste</td>
+                        <td class="red"width="12%">    {% if process.process_grade == '1,5' %} X {% endif %}</td>
+                        <td class="red"width="10%">    {% if process.process_grade == '2,5' %} X {% endif %}</td>
+                        <td class="yellow"width="10%"> {% if process.process_grade == '3,5' %} X {% endif %}</td>
+                        <td class="green"width="10%">  {% if process.process_grade == '4,5' %} X {% endif %}</td>
+                        <td class="green" width="15%"> {% if process.process_grade == '5,5' %} X {% endif %}</td>
+                        <td class="headerth"width="13%">Expectations exceeded</td>
+                    </tr>
+                     <tr>
+                        <td class="description" width="20%">Process is nearly defective, low waste and cycle time better than most</td>
+                        <td class="red" width="12%">    {% if process.process_grade == '1,4' %} X {% endif %}</td>
+                        <td class="red" width="10%">    {% if process.process_grade == '2,4' %} X {% endif %}</td>
+                        <td class="yellow" width="10%"> {% if process.process_grade == '3,4' %} X {% endif %}</td>
+                        <td class="green"width="10%">   {% if process.process_grade == '4,4' %} X {% endif %}</td>
+                        <td class="green" width="15%">  {% if process.process_grade == '5,4' %} X {% endif %}</td>
+                        <td class="headerth" width="13%">Very satisfied</td>
+                    </tr>
+                    <tr>
+                        <td class="description" width="20%">Process has some defects. Waste cycle time is up to industry average</td>
+                        <td class="red" width="10%">    {% if process.process_grade == '1,3' %} X {% endif %}</td>
+                        <td class="red" width="12%">    {% if process.process_grade == '2,3' %} X {% endif %}</td>
+                        <td class="yellow" width="10%"> {% if process.process_grade == '3,3' %} X {% endif %}</td>
+                        <td class="yellow" width="10%"> {% if process.process_grade == '4,3' %} X {% endif %}</td>
+                        <td class="yellow" width="15%"> {% if process.process_grade == '5,3' %} X {% endif %}</td>
+                        <td class="headerth" width="13%">Satisfied</td>
+                    </tr>
+                    <tr>
+                        <td class="description" width="20%">Process has many defects, generates substantial waste and cycle time is undue</td>
+                        <td class="red"width="10%">{% if process.process_grade == '1,2' %} X {% endif %}</td>
+                        <td class="red"width="12%">{% if process.process_grade == '2,2' %} X {% endif %}</td>
+                        <td class="red"width="10%">{% if process.process_grade == '3,2' %} X {% endif %}</td>
+                        <td class="red"width="10%">{% if process.process_grade == '4,2' %} X {% endif %}</td>
+                        <td class="red"width="15%">{% if process.process_grade == '5,2' %} X {% endif %}</td>
+                        <td class="headerth"width="13%">Dissatisfied</td>
+                    </tr>
+                    <tr>
+                        <td class="description" width="20%">Process is plagued with defects, waste and long unpredictable cycle time</td>
+                        <td class="red"width="10%"> {% if process.process_grade == '1,1' %} X {% endif %}</td>
+                        <td class="red"width="12%"> {% if process.process_grade == '2,1' %} X {% endif %}</td>
+                        <td class="red"width="10%"> {% if process.process_grade == '3,1' %} X {% endif %}</td>
+                        <td class="red"width="10%"> {% if process.process_grade == '4,1' %} X {% endif %}</td>
+                        <td class="red"width="15%"> {% if process.process_grade == '5,1' %} X {% endif %}</td>
+                        <td class="headerth"width="13%">Very dissatisfied</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td>Output does not meet customers requirements</td>
+                        <td>Output meets some customer requirements</td>
+                        <td>Output meets most customer requirment</td>
+                        <td>Output meets all customer requirements</td>
+                        <td>Output exceeds most customer requirement</td>
+                        <td width="15%"></td>
+                    </tr> 
+                    <tr>
+                        <td colspan="2"></td>
+                        <td colspan="5" class="headerth">Effectiveness</td>
+                        <td class="special" width="15%"></td>
+                    </tr>
+                </tbody>
+       
+            </table>
+
+            <div class="card-body">
+                <p><strong>Grade given by process lead:</strong> {{ process.process_grade }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Proposed improvements/changes</div>
+            <div class="card-body">
+                <ul class="proposal-list">
+                    {% for item in process.process_proposal %}
+                        <li>{{ item|safe }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

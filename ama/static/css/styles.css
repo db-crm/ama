@@ -1,0 +1,15 @@
+/* h1 {
+    color:white
+} */
+.form-layout{
+    border-radius: 15px ;
+    width: 700px;
+}
+
+input
+[type=password],
+[type=text],
+[type=date]{
+    background-color: white;
+  }
+
