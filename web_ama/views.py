@@ -4,7 +4,7 @@ from .forms import *
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
-
+from django.utils.decorators import method_decorator
 from .models import department,division,area,process_assessment
 
 from formtools.wizard.views import SessionWizardView
@@ -109,7 +109,7 @@ def dashboard(request):
     total_assessments = assessments.count()
     one_month_ago = timezone.now() - relativedelta(months=1)
     assessments_this_month = assessments.filter(process_assessment_date__gte=one_month_ago).count()
- 
+   
     context = {
         'assessments': assessments,
         'departments': departments,
@@ -200,7 +200,7 @@ def get_all_divisions_areas(request):
     try:
         divisions = list(division.objects.all().values('id', 'division_name', 'division_department_id'))
         areas = list(area.objects.all().values('id', 'area_name', 'area_division_id'))
-        print(divisions)
+        # print(divisions)
         return JsonResponse({
             'divisions': divisions,
             'areas': areas
@@ -209,7 +209,7 @@ def get_all_divisions_areas(request):
         print(f"Error in get_all_divisions_areas: {str(e)}")  # For debugging
         return JsonResponse({'error': 'Internal server error'}, status=500)
 
-@login_required(login_url='my_login')
+@method_decorator(login_required(login_url='my_login'), name='dispatch')
 class CreateRecordView(SessionWizardView):
     form_list = [GeneralInfoForm, ProcessNameForm, TriggeringEventsForm, ToolsUsedForm, 
                  ProcessStepsForm, ActorsForm, ObjectiveForm, GradeForm, RecommendationsForm]
