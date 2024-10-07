@@ -89,6 +89,7 @@
                             <p><strong>Division:</strong> {{assessment.process_division}}</p>
                             <p><strong>Area:</strong> {{assessment.process_area}}</p>
                             <p><strong>Lead:</strong> {{assessment.process_lead}}</p>
+                            <p><strong>Lead Backup:</strong> {{assessment.process_lead_bk}}</p>
                             <p><strong>Status:</strong> <span class="badge badge-pill badge-primary status-badge">{{assessment.process_status}}</span></p>
                         </div>
                     </div>
@@ -155,10 +156,18 @@
         <div class="mb-4">
             <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-custom"><i class="fas fa-arrow-left"></i> Return</a>
             <a href="{% url 'update_record' assessment.id %}" class="btn btn-info btn-custom"><i class="fas fa-pencil-alt"></i> Update</a>
-            <a href="{% url 'delete_record' assessment.id %}" class="btn btn-danger btn-custom"><i class="fas fa-trash"></i> Delete</a>
+            <button onclick="confirmDelete('{{ assessment.id }}')" class="btn btn-danger btn-custom"><i class="fas fa-trash"></i> Delete</button>
             <a href="{% url 'generate_pdf' assessment.id %}" class="btn btn-primary btn-custom" target="_blank"><i class="fas fa-download"></i> Download PDF</a>
         </div>
     </div>
+
+    <script>
+        function confirmDelete(id) {
+            if (confirm("Are you sure you want to delete this record? This action cannot be undone.")) {
+                window.location.href = "/delete_record/" + id ;
+            }
+        }
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>

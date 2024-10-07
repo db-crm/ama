@@ -37,12 +37,13 @@ class LoginForm(AuthenticationForm):
 class GeneralInfoForm(forms.ModelForm):
     class Meta:
         model = process_assessment
-        fields = ['process_assessment_date', 'process_department', 'process_division', 'process_area', 'process_description', 'process_lead', 'process_status']
+        fields = ['process_assessment_date', 'process_department', 'process_division', 'process_area', 'process_description', 'process_lead', 'process_lead_bk', 'process_status']
         widgets = {
             'process_assessment_date': forms.DateInput(attrs={'type': 'date'}),
             'process_status': forms.Select(choices=process_assessment.STATUS_CHOICES),
             'process_division': forms.Select(attrs={'class': 'dependent-dropdown'}),
             'process_area': forms.Select(attrs={'class': 'dependent-dropdown'}),
+            
         }
 
     def __init__(self, *args, **kwargs):
@@ -162,6 +163,8 @@ class UpdateRecordForm(forms.ModelForm):
             'process_department', 
             'process_division', 
             'process_area', 
+            'process_lead',
+             'process_lead_bk',
             'process_description',
                           # Process Breakdown:
 
@@ -212,6 +215,8 @@ class UpdateRecordForm(forms.ModelForm):
             'process_department': 'Department', 
             'process_division': 'Division', 
             'process_area': 'Area', 
+            'process_lead': 'Process Lead',
+            'process_lead_bk': 'Process Lead Backup',
             'process_description': 'Description',
                         # Process Breakdown:
 
