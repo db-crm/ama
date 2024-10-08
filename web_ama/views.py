@@ -463,12 +463,16 @@ def generate_pdf(request,pk):
 
 # PDF Export 
 @login_required(login_url='my_login')
-def format_li(line):
-    """Format the proposals as bullet points."""
-    lines = line.split('\n')
-    return [line.strip() for line in lines if line.strip()]
+
 
 def export_process_assessment_pdf(request, pk):
+
+
+    def format_li(line):
+        """Format the proposals as bullet points."""
+        lines = line.split('\n')
+        return [line.strip() for line in lines if line.strip()]
+
     template = get_template('web_ama/p_assessment_e_temp.html')
     process = process_assessment.objects.get(pk=pk)
     
