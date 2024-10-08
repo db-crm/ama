@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const exportPdfBtn = document.getElementById('export-pdf');
     const exportExcelBtn = document.getElementById('export-excel');
 
-    let currentPage = 1;
+    let currentPage = 1; // Ensure this is declared at the top of your script
     let allDivisions = [];
     let allAreas = [];
 
@@ -25,22 +25,25 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error:', error));
 
-    function fetchAssessments() {
+    // Proposed fix
+    
+
+    function fetchAssessments(page = currentPage) {
         const searchTerm = searchBar.value;
         const department = departmentFilter.value;
         const division = divisionFilter.value;
         const area = areaFilter.value;
         const limit = itemsPerPage.value;
-    
+
         const params = new URLSearchParams({
             search: searchTerm,
             department: department,
             division: division,
             area: area,
             items_per_page: limit,
-            page: currentPage
+            page: page
         });
-    
+
         fetch(`/get-filtered-assessments/?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
@@ -48,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updatePagination(data.total_pages, data.current_page);
                 updateKPIs(data.kpis);
                 updateExportUrls(params);
+                currentPage = data.current_page; // Update the current page
             })
             .catch(error => console.error('Error:', error));
     }
@@ -119,8 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
             li.addEventListener('click', (e) => {
                 e.preventDefault();
-                currentPage = i;
-                fetchAssessments();
+                fetchAssessments(i); // Pass the page number directly
             });
             pagination.appendChild(li);
         }
@@ -131,32 +134,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('assessments-this-month').textContent = kpis.assessments_this_month;
     }
 
-    searchBar.addEventListener('input', () => {
-        currentPage = 1;
-        fetchAssessments();
-    });
-
-    departmentFilter.addEventListener('change', () => {
-        currentPage = 1;
-        updateDivisionOptions();
-        fetchAssessments();
-    });
-
-    divisionFilter.addEventListener('change', () => {
-        currentPage = 1;
-        updateAreaOptions();
-        fetchAssessments();
-    });
-
-    areaFilter.addEventListener('change', () => {
-        currentPage = 1;
-        fetchAssessments();
-    });
-
-    itemsPerPage.addEventListener('change', () => {
-        currentPage = 1;
-        fetchAssessments();
-    });
+    searchBar.addEventListener('input', () => fetchAssessments(1));
+    departmentFilter.addEventListener('change', () => fetchAssessments(1));
+    divisionFilter.addEventListener('change', () => fetchAssessments(1));
+    areaFilter.addEventListener('change', () => fetchAssessments(1));
+    itemsPerPage.addEventListener('change', () => fetchAssessments(1));
 
     exportPdfBtn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -171,5 +153,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // Initial fetch
-    fetchAssessments();
+    fetchAssessments(1);
 });

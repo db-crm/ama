@@ -36,6 +36,22 @@ class area(models.Model):
     def __str__(self):
         return self.area_name
     
+
+# New TechnologyStaff model
+class technology_staff(models.Model):
+    creation_date = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100)
+    department = models.ForeignKey(department, on_delete=models.PROTECT, verbose_name='Department')
+    division = models.ForeignKey(division, on_delete=models.PROTECT, verbose_name='Division')
+    area = models.ForeignKey(area, on_delete=models.PROTECT, verbose_name='Area')
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    position = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 # Process Assessment
 class process_assessment(models.Model):
 
@@ -49,8 +65,8 @@ class process_assessment(models.Model):
     process_division = models.ForeignKey(division, on_delete=models.PROTECT, verbose_name ='Division')
     process_area = models.ForeignKey(area,on_delete=models.PROTECT,verbose_name ='Area')
     process_description = models.TextField('Description')
-    process_lead = models.TextField('Process Lead',null=True)
-
+    process_lead = models.ForeignKey('technology_staff', on_delete=models.SET_NULL, null=True, blank=True, related_name='led_processes', verbose_name='Process Lead')
+    process_lead_bk = models.ForeignKey('technology_staff', on_delete=models.SET_NULL, null=True, blank=True, related_name='backup_led_processes', verbose_name='Process Lead Backup')
     STATUS_CHOICES = (
         ("Deprecated", "Deprecated"),
         ("On-going", "On-going"),

@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from .forms import *
 
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
-
+from django.utils.decorators import method_decorator
 from .models import department,division,area,process_assessment
 
 from formtools.wizard.views import SessionWizardView
@@ -47,7 +47,20 @@ from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.db.models import Q, Count, Avg
 from django.core.paginator import Paginator
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
+@login_required(login_url='my_login')
+def delete_record(request, pk):
+    record = get_object_or_404(process_assessment, id=pk)
+    
+    if request.method == 'GET':
+        record.delete()
+        messages.success(request, "Record deleted successfully.")
+        return redirect('dashboard')
+    
+    return redirect('dashboard')
 
 def home(request):
     return render(request,'web_ama/index.html')
@@ -98,6 +111,7 @@ def my_login(request):
 
     return render(request, 'web_ama/my_login.html', context=context)
 
+@login_required(login_url='my_login')
 def dashboard(request):
     assessments = process_assessment.objects.all().order_by('creation_date')
     departments = department.objects.all()
@@ -108,7 +122,7 @@ def dashboard(request):
     total_assessments = assessments.count()
     one_month_ago = timezone.now() - relativedelta(months=1)
     assessments_this_month = assessments.filter(process_assessment_date__gte=one_month_ago).count()
- 
+   
     context = {
         'assessments': assessments,
         'departments': departments,
@@ -119,6 +133,7 @@ def dashboard(request):
     }
     return render(request, 'web_ama/dashboard.html', context)
 
+@login_required(login_url='my_login')
 def get_filtered_assessments(request):
     search_term = request.GET.get('search', '')
     department_id = request.GET.get('department', '')
@@ -127,7 +142,7 @@ def get_filtered_assessments(request):
     items_per_page = int(request.GET.get('items_per_page', 10))
     page_number = int(request.GET.get('page', 1))
 
-    assessments = process_assessment.objects.all()
+    assessments = process_assessment.objects.all().order_by('-creation_date')
 
     if search_term:
         assessments = assessments.filter(
@@ -160,7 +175,7 @@ def get_filtered_assessments(request):
         'process_division': str(assessment.process_division),
         'process_area': str(assessment.process_area),
         'process_description': assessment.process_description,
-        'process_lead': assessment.process_lead,
+        'process_lead': str(assessment.process_lead),
         'process_status': assessment.process_status,
         'process_name_c': assessment.process_name_c,
         'process_name_s': assessment.process_name_s,
@@ -198,7 +213,7 @@ def get_all_divisions_areas(request):
     try:
         divisions = list(division.objects.all().values('id', 'division_name', 'division_department_id'))
         areas = list(area.objects.all().values('id', 'area_name', 'area_division_id'))
-        print(divisions)
+        # print(divisions)
         return JsonResponse({
             'divisions': divisions,
             'areas': areas
@@ -207,7 +222,7 @@ def get_all_divisions_areas(request):
         print(f"Error in get_all_divisions_areas: {str(e)}")  # For debugging
         return JsonResponse({'error': 'Internal server error'}, status=500)
 
-
+@method_decorator(login_required(login_url='my_login'), name='dispatch')
 class CreateRecordView(SessionWizardView):
     form_list = [GeneralInfoForm, ProcessNameForm, TriggeringEventsForm, ToolsUsedForm, 
                  ProcessStepsForm, ActorsForm, ObjectiveForm, GradeForm, RecommendationsForm]
@@ -340,14 +355,14 @@ def update_record(request, pk):
 
 # - View a singular record
 
-def format_li(line):
-    """Format the proposals as bullet points."""
-    lines = line.split('\n')
-    return [line.strip() for line in lines if line.strip()]
 
 @login_required(login_url='my_login')
 def singular_record(request,pk):
-
+    
+    def format_li(line):
+        """Format the proposals as bullet points."""
+        lines = line.split('\n')
+        return [line.strip() for line in lines if line.strip()]
     process = process_assessment.objects.get(id=pk)
 
 
@@ -367,12 +382,15 @@ def singular_record(request,pk):
 
 # - Delete a record
 @login_required(login_url='my_login')
-def delete_record(request,pk):
-    record = process_assessment.objects.get(id=pk)
-
-    record.delete()
+def delete_record(request, pk):
+    record = get_object_or_404(process_assessment, id=pk)
+    
+    if request.method == 'GET':
+        record.delete()
+        messages.success(request, "Record deleted successfully.")
+        return redirect('dashboard')
+    
     return redirect('dashboard')
-
 
 
 # - Generate a PDF
@@ -444,13 +462,17 @@ def generate_pdf(request,pk):
     
 
 # PDF Export 
+@login_required(login_url='my_login')
 
-def format_li(line):
-    """Format the proposals as bullet points."""
-    lines = line.split('\n')
-    return [line.strip() for line in lines if line.strip()]
 
 def export_process_assessment_pdf(request, pk):
+
+
+    def format_li(line):
+        """Format the proposals as bullet points."""
+        lines = line.split('\n')
+        return [line.strip() for line in lines if line.strip()]
+
     template = get_template('web_ama/p_assessment_e_temp.html')
     process = process_assessment.objects.get(pk=pk)
     
