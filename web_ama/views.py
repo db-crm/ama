@@ -637,11 +637,11 @@ def export_table_excel(request):
     # Write headers
     headers = [
         'ID', 'Creation Date', 'Date Assessed', 'Department', 'Division', 'Area',
-        'Description', 'Process Lead', 'Status', 'Name (Comments)', 'Name (Source)',
-        'Name (Next Steps)', 'Trigger (Comments)', 'Trigger (Source)', 'Trigger (Next Steps)',
-        'Tools (Comments)', 'Tools (Source)', 'Tools (Next Steps)', 'Steps (Comments)',
-        'Steps (Source)', 'Steps (Next Steps)', 'Actors (Comments)', 'Actors (Source)',
-        'Actors (Next Steps)', 'Objective (Comments)', 'Objective (Source)',
+        'Description', 'Process Lead', 'Process Lead Backup', 'Status', 'Name (Comments)',
+        'Name (Source)', 'Name (Next Steps)', 'Trigger (Comments)', 'Trigger (Source)',
+        'Trigger (Next Steps)', 'Tools (Comments)', 'Tools (Source)', 'Tools (Next Steps)',
+        'Steps (Comments)', 'Steps (Source)', 'Steps (Next Steps)', 'Actors (Comments)',
+        'Actors (Source)', 'Actors (Next Steps)', 'Objective (Comments)', 'Objective (Source)',
         'Objective (Next Steps)', 'Grade', 'Recommendations'
     ]
     for col, header in enumerate(headers):
@@ -656,28 +656,29 @@ def export_table_excel(request):
         worksheet.write(row, 4, str(assessment.process_division))
         worksheet.write(row, 5, str(assessment.process_area))
         worksheet.write(row, 6, assessment.process_description)
-        worksheet.write(row, 7, assessment.process_lead)
-        worksheet.write(row, 8, assessment.process_status)
-        worksheet.write(row, 9, assessment.process_name_c)
-        worksheet.write(row, 10, assessment.process_name_s)
-        worksheet.write(row, 11, assessment.process_name_n)
-        worksheet.write(row, 12, assessment.process_trigger_c)
-        worksheet.write(row, 13, assessment.process_trigger_s)
-        worksheet.write(row, 14, assessment.process_trigger_n)
-        worksheet.write(row, 15, assessment.process_tools_c)
-        worksheet.write(row, 16, assessment.process_tools_s)
-        worksheet.write(row, 17, assessment.process_tools_n)
-        worksheet.write(row, 18, assessment.process_steps_c)
-        worksheet.write(row, 19, assessment.process_steps_s)
-        worksheet.write(row, 20, assessment.process_steps_n)
-        worksheet.write(row, 21, assessment.process_actors_c)
-        worksheet.write(row, 22, assessment.process_actors_s)
-        worksheet.write(row, 23, assessment.process_actors_n)
-        worksheet.write(row, 24, assessment.process_objective_c)
-        worksheet.write(row, 25, assessment.process_objective_s)
-        worksheet.write(row, 26, assessment.process_objective_n)
-        worksheet.write(row, 27, assessment.process_grade)
-        worksheet.write(row, 28, assessment.process_proposal)
+        worksheet.write(row, 7, str(assessment.process_lead) if assessment.process_lead else '')
+        worksheet.write(row, 8, str(assessment.process_lead_bk) if assessment.process_lead_bk else '')
+        worksheet.write(row, 9, assessment.process_status)
+        worksheet.write(row, 10, assessment.process_name_c)
+        worksheet.write(row, 11, assessment.process_name_s)
+        worksheet.write(row, 12, assessment.process_name_n)
+        worksheet.write(row, 13, assessment.process_trigger_c)
+        worksheet.write(row, 14, assessment.process_trigger_s)
+        worksheet.write(row, 15, assessment.process_trigger_n)
+        worksheet.write(row, 16, assessment.process_tools_c)
+        worksheet.write(row, 17, assessment.process_tools_s)
+        worksheet.write(row, 18, assessment.process_tools_n)
+        worksheet.write(row, 19, assessment.process_steps_c)
+        worksheet.write(row, 20, assessment.process_steps_s)
+        worksheet.write(row, 21, assessment.process_steps_n)
+        worksheet.write(row, 22, assessment.process_actors_c)
+        worksheet.write(row, 23, assessment.process_actors_s)
+        worksheet.write(row, 24, assessment.process_actors_n)
+        worksheet.write(row, 25, assessment.process_objective_c)
+        worksheet.write(row, 26, assessment.process_objective_s)
+        worksheet.write(row, 27, assessment.process_objective_n)
+        worksheet.write(row, 28, assessment.process_grade)
+        worksheet.write(row, 29, assessment.process_proposal)
 
     workbook.close()
 
@@ -686,7 +687,6 @@ def export_table_excel(request):
     response['Content-Disposition'] = 'attachment; filename=process_assessments.xlsx'
     response.write(output.getvalue())
     return response
-
 
 
 
